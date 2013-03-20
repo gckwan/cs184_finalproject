@@ -61,7 +61,7 @@ function add_user_credits(user_id, gold_amount, silver_amount, response){
   query.on('row', function(row, result){
       gold = row.gold_credits;
       silver = row.silver_credits;
-      set_user_credits(user_id, gold + gold_amount, silver + silver_amount, response);
+      set_user_credits(user_id, gold + parseInt(gold_amount), silver + parseInt(silver_amount), response);
   });
 }
 exports.add_user_credits = add_user_credits
@@ -75,32 +75,81 @@ exports.get_user_credits = get_user_credits;
 /////////////////////
 // Requests
 /////////////////////
-function get_user_requests_all(user_id, response){
+
+/////////
+// POST
+/////////
+function add_request(user_id, from_lang, from_text, to_lang, response){
+  client.query("INSERT INTO REQUESTS (requester, from_language, from_text, to_language, status_id) VALUES ($1, $2, $3, $4, 1)",[user_id, from_lang, from_text, to_lang]);
+  get_requests_current(user_id, response);
+}
+exports.add_request = add_request;
+
+function delete_request(request_id, response){
+  client.query("DELETE FROM requests WHERE request_id = $1", [request_id]);
+  get_request(request_id, response);
+}
+exports.delete_request = delete_request;
+
+function complete_request(request_id, response){
+  client.query("UPDATE requests SET status_id = 2 WHERE request_id = $1",[request_id]);
+  get_request(request_id, response);
+}
+exports.complete_request = complete_request;
+
+/////////
+// GET
+/////////
+function get_request(request_id, response){
+  var query = client.query("SELECT * FROM requests WHERE request_id = $1", [request_id]);
+  json_all_rows(query, response);
+}
+exports.get_request = get_request;
+
+function get_requests_all(user_id, response){
   var query = client.query("SELECT * FROM requests WHERE requester = $1",[user_id]);
   json_all_rows(query, response);
 }
-exports.get_user_requests_all = get_user_requests_all;
+exports.get_requests_all = get_requests_all;
 
-function get_user_requests_current(user_id, response){
+function get_requests_current(user_id, response){
   var query = client.query("SELECT * FROM requests WHERE requester = $1 AND status_id = 1",[user_id]);
   json_all_rows(query, response);
 }
-exports.get_user_requests_current = get_user_requests_current;
+exports.get_requests_current = get_requests_current;
 
-function get_user_requests_completed(user_id, response){
+function get_requests_completed(user_id, response){
   var query = client.query("SELECT * FROM requests WHERE requester = $1 AND status_id = 2",[user_id]);
   json_all_rows(query, response);
 }
-exports.get_user_requests_completed = get_user_requests_completed;
+exports.get_requests_completed = get_requests_completed;
 
 /////////////////////
 // Responses 
 /////////////////////
-function get_request_responses(request_id, response){
+function add_response(request_id, responder, req_response, response){
+  client.query("INSERT INTO req_responses (request_id, responder, response) VALUES ($1,$2,$3)",[request_id, responder, req_response]);
+  get_responses(request_id, response);
+}
+exports.add_response = add_response;
+
+function edit_response(response_id, req_response, response){
+  client.query("UPDATE req_responses SET response = $1 WHERE response_id = $2", [req_response, response_id]);
+  get_response(response_id, response);
+}
+exports.edit_response = edit_response
+
+function get_response(response_id, response){
+  var query = client.query("SELECT * FROM req_responses WHERE response_id = $1",[response_id]);
+  json_all_rows(query, response);
+}
+exports.get_response = get_response
+
+function get_responses(request_id, response){
   var query = client.query("SELECT * FROM req_responses WHERE request_id = $1",[request_id]);
   json_all_rows(query, response);
 }
-exports.get_request_responses = get_request_responses;
+exports.get_responses = get_responses;
 
 /////////////////////
 /////////////////////
