@@ -8,8 +8,8 @@ INSERT INTO PROF_LEVELS (prof_label) VALUES ('Intermediate');
 INSERT INTO PROF_LEVELS (prof_label) VALUES ('Advanced');
 INSERT INTO PROF_LEVELS (prof_label) VALUES ('Native');
 
-INSERT INTO USER_LIST (username, email) VALUES ('EpicPhilure','pcchen@stanford.edu');
-INSERT INTO USER_LIST (username, email) VALUES ('Graziosa', 'gckwan@stanford.edu');
+INSERT INTO USER_LIST (username, email, password) VALUES ('EpicPhilure','pcchen@stanford.edu', '');
+INSERT INTO USER_LIST (username, email, password) VALUES ('Graziosa', 'gckwan@stanford.edu', '');
 INSERT INTO USER_LANGUAGES VALUES(1,1,4);
 INSERT INTO USER_LANGUAGES VALUES(1,2,2);
 INSERT INTO USER_LANGUAGES VALUES(1,3,2);

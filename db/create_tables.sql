@@ -7,7 +7,8 @@ CREATE SEQUENCE req_seq START 1;
 CREATE TABLE user_list (
   user_id integer PRIMARY KEY DEFAULT nextval('uid_seq'),
   username text NOT NULL UNIQUE,
-  email text NOT NULL UNIQUE
+  email text NOT NULL UNIQUE,
+  password text NOT NULL
 );
 
 CREATE TABLE languages(

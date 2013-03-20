@@ -1,17 +1,41 @@
 var pg = require('pg');
 var conString = "postgres://postgres:pcchen@localhost:5432/cs184";
 var client = new pg.Client(conString);
+var bcrypt = require('bcrypt');
 client.connect();
-
 
 /////////////////////
 // User 
 /////////////////////
-function add_user(username, email, response){
-  client.query("INSERT INTO user_list(username, email) values($1,$2)",[username,email]);
-  get_user_by_username(username);
+function add_user(username, email, password, response){
+  bcrypt.genSalt(10, function(err, salt){
+    bcrypt.hash(password, salt, function(err, hash){
+      client.query("INSERT INTO user_list(username, email, password) values($1,$2)",[username,email,hash]);
+      get_user_by_username(username);
+    });
+  });
 }
 exports.add_user = add_user;
+
+function login_user(username, password, response){
+  var query = client.query("SELECT password FROM user_list WHERE username = $1",[username]);
+  query.on('row', function(row, result){
+      bcrypt.compare(password, row.password, function(err, res){
+        comp = "";
+        if(res == true){
+          //TODO: Change this to actual login behavior
+          comp = "password matched hash";
+        }else{
+          //TODO: Change this to actual login behavior
+          comp = "password match fail";
+        }
+        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Content-Length", comp.length);
+        response.end(comp);
+      });
+  });
+}
+exports.login_user = login_user
 
 function delete_user(user_id, response){
   client.query("DELETE FROM user_list WHERE user_id = $1",[user_id]);

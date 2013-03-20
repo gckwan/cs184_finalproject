@@ -3,13 +3,30 @@ var database = require('./database');
 var url = require('url');
 var app = express();
 
-//database.set_lang_prof('EpicPhilure','1','4')
-app.set('title', 'My Site');
+app.set('title', 'BenTen');
 app.get('title');
 
 /////////////////////
 // User 
 /////////////////////
+/////////
+// POST
+/////////
+app.get("/add_user", function(request, response){
+  var queryData = url.parse(request.url, true).query;   
+  database.add_username(queryData.username, queryData.email, queryData.password, response);
+});
+
+app.get("/login_user", function(request, response){
+  var queryData = url.parse(request.url, true).query;
+  database.login_user(queryData.username, queryData.password, response);
+});
+
+app.get("/delete_user", function(request, response){
+  var queryData = url.parse(request.url, true).query;
+  database.delete_user(queryData.userid, response);
+});
+
 app.get("/get_user_by_id", function(request, response){
   var queryData = url.parse(request.url, true).query;   
   database.get_user_by_id(queryData.userid, response);
@@ -18,18 +35,6 @@ app.get("/get_user_by_id", function(request, response){
 app.get("/get_user_by_username", function(request, response){
   var queryData = url.parse(request.url, true).query;
   database.get_user_by_username(queryData.username, response);
-});
-
-//TODO: Change to post request
-app.get("/add_user", function(request, response){
-  var queryData = url.parse(request.url, true).query;   
-  database.add_username(queryData.username, queryData.email, response);
-});
-
-//TODO: Change to post request
-app.get("/delete_user", function(request, response){
-  var queryData = url.parse(request.url, true).query;
-  database.delete_user(queryData.userid, response);
 });
 
 /////////////////////
