@@ -1,0 +1,14 @@
+DROP TABLE req_responses;
+DROP TABLE requests;
+DROP TABLE req_statuses;
+DROP TABLE user_credits;
+DROP TABLE user_languages;
+DROP TABLE languages;
+DROP TABLE prof_levels;
+DROP TABLE user_list;
+DROP SEQUENCE uid_seq;
+DROP SEQUENCE lang_seq;
+DROP SEQUENCE prof_seq;
+DROP SEQUENCE req_seq;
+DROP SEQUENCE req_stat_seq;
+DROP SEQUENCE resp_seq;
